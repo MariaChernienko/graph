@@ -10,22 +10,17 @@ class App extends Component {
     };
   }
 
-  callAPI() {
-    fetch("/api/passwords")
-      .then(res => {
-        console.log(res);
-        res.text();
-      })
-      .then(res =>
-        this.setState(prevState => ({
-          data: [...prevState.data, Math.ceil(res * 100)],
-          step: prevState.step + 1
-        }))
-      );
+  async callAPI() {
+    const res = await fetch("/api/passwords");
+    const rand = await res.json();
+
+    this.setState(prevState => ({
+      data: [...prevState.data, Math.ceil(rand * 100)],
+      step: prevState.step + 1
+    }));
   }
 
   componentDidMount() {
-    // this.callAPI();
     this.interval = setInterval(() => this.callAPI(), 1000);
   }
 
@@ -38,6 +33,15 @@ class App extends Component {
     const shift = this.state.step - 8;
     return (
       <div className="App">
+        <div className="vertical">
+          <span>0</span>
+          <span>0.2</span>
+          <span>0.4</span>
+          <span>0.6</span>
+          <span>0.8</span>
+          <span>1</span>
+        </div>
+
         <div className="box">
           <div
             className="box_diagram"
@@ -48,7 +52,9 @@ class App extends Component {
                 key={key}
                 className="box_diagram-el"
                 style={{ height: `${2 * el}px`, opacity: `${1.2 - el / 100}` }}
-              />
+              >
+                <span className="box_diagram-el-num">{key + 1}</span>
+              </div>
             ))}
           </div>
         </div>
